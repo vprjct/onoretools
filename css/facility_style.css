@@ -1,0 +1,363 @@
+/* =========================
+   全体
+========================= */
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+}
+
+h1, h2 {
+  margin-bottom: 8px;
+}
+
+section {
+  margin-bottom: 30px;
+}
+
+
+label {
+    display: inline-block;
+}
+
+/* =========================
+   テーブル
+========================= */
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, td {
+  padding: 6px 8px;
+  text-align: left;
+}
+
+th {
+  background-color: #f0f0f0;
+}
+
+/* 横スクロール */
+#currentResultTable,
+#comparisonTable {
+  min-width: 500px;
+}
+
+/* =========================
+   施設カードグリッド
+========================= */
+
+#facilitySelectContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+
+/* =========================
+   施設カード
+========================= */
+
+.facility-select {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 8px;
+  cursor: pointer;
+  background-color: #fdfdfd;
+  transition: 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* hover */
+.facility-select:hover {
+  background-color: #f5f5f5;
+}
+
+/* ON状態 */
+.facility-select.active {
+  background-color: #e6f7ea;
+  border: 2px solid #2E8B57;
+}
+
+/* =============================
+   ツールチップ説明
+============================= */
+
+.facility-select {
+  position: relative;
+  overflow: visible;
+}
+
+.facility-desc {
+  position: absolute;
+  bottom: 110%;
+  left: 0;
+  width: 260px;
+  background: rgba(40, 40, 40, 0.95);
+  color: #fff;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  line-height: 1.5;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+  z-index: 100;
+}
+
+.facility-select:hover .facility-desc {
+  opacity: 1;
+}
+
+.facilities-container {
+  overflow: visible;
+}
+
+/* =========================
+   ヘッダー（施設名＋バッジ）
+========================= */
+
+.facility-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+  font-weight: bold;
+}
+
+/* 右側バッジ群 */
+.facility-badges {
+  display: flex;
+  gap: 4px;
+}
+
+/* 共通バッジ */
+.facility-badge {
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 12px;
+  color: white;
+  white-space: nowrap;
+}
+
+/* サイズ */
+.facility-badge.size {
+  background-color: #444;
+}
+
+/* 金 */
+.facility-badge.gold {
+  background-color: #8B4513;
+}
+
+/* 米 */
+.facility-badge.rice {
+  background-color: #2E8B57;
+}
+
+/* ON状態でサイズ色変更 */
+.facility-select.active .facility-badge.size {
+  background-color: #2E8B57;
+}
+
+/* =========================
+   効果表示（農業 / 商業 1行）
+========================= */
+
+.facility-effects {
+  font-size: 14px;
+}
+
+.facility-effects .agri {
+  color: #2E8B57;
+}
+
+.facility-effects .comm {
+  color: #1E90FF;
+}
+
+/* =========================
+   警告表示
+========================= */
+
+.warning {
+  color: red;
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+/* =========================
+   ボタン
+========================= */
+
+button {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  color: #333;
+  background-color: #f5f5f5;
+}
+
+button:hover {
+  background-color: #e0e0e0;
+}
+
+/* =========================
+   サイズステータスバー
+========================= */
+
+.size-status-bar {
+  font-weight: bold;
+  padding: 6px 10px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  background-color: #e6f7ea;
+  color: #2E8B57;
+}
+
+.size-status-bar.warning {
+  background-color: #fff3cd;
+  color: #b8860b;
+}
+
+.size-status-bar.danger {
+  background-color: #f8d7da;
+  color: #b22222;
+}
+
+/* =============================
+   初期施設（fixed）
+============================= */
+
+.facility-select.fixed {
+  background: #FFE6CE;
+  border: 1px solid #F68B1E;
+  color: #444;
+}
+
+.facility-select.fixed .badge {
+  background: #d8cfb2;
+  color: #333;
+}
+
+/* =========================
+   建設不可状態
+========================= */
+
+.facility-select.disabled {
+  background-color: #eeeeee;
+  border: 1px solid #ccc;
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.facility-select.disabled:hover {
+  background-color: #eeeeee;
+}
+
+/* バッジも暗く */
+.facility-select.disabled .facility-badge {
+  background-color: #999 !important;
+}
+
+.facility-badge.size {
+  background-color: #444;
+}
+
+.facility-badge.size[data-zero="true"] {
+  background-color: #777;
+}
+
+
+/* =============================
+   建設禁止（都市固有）
+============================= */
+
+.disabled-forbidden {
+  background-color: #bfc3c8;
+  border: 1px solid #9aa0a6;
+  color: #555;
+  opacity: 0.9;
+  cursor: not-allowed;
+}
+
+.disabled-forbidden .badge {
+  background-color: #8a8f96;
+  color: #fff;
+}
+
+/* =============================
+   結果UI v2
+============================= */
+
+.result-wrapper {
+  margin-top: 20px;
+}
+
+.result-main {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.result-main-card {
+  flex: 1;
+  padding: 16px;
+  border-radius: 12px;
+  background: #f8f9fb;
+  color: #333;
+  border: 1px solid #e4e6eb;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.result-main-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.result-main-card h3 {
+  margin: 0;
+  font-size: 13px;
+  color: #666;
+}
+
+.result-main-card .value {
+  font-size: 26px;
+  font-weight: 600;
+  margin-top: 6px;
+  color: #222;
+}
+
+.result-main-card:first-child {
+  background: #eef4ff;
+  border-color: #d6e2ff;
+}
+
+.result-sub {
+  display: flex;
+  gap: 20px;
+  padding: 10px 12px;
+  background: #f5f5f5;
+  border-radius: 8px;
+  font-size: 14px;
+  flex-wrap: wrap;
+}
+
+.result-sub div {
+  white-space: nowrap;
+}
+
+/* =============================
+   比較ハイライト
+============================= */
+
+.highlight-max {
+  background-color: #e6f4ea;
+  font-weight: 600;
+  color: #1e7e34;
+}

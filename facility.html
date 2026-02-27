@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ポメラニアンメニュー</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="css/facility_style.css">
+</head>
+<body>
+    <nav>
+        <ul class="menu">
+            <li class="dropdown">
+                <a href="#">ツール</a>
+                <ul class="submenu">
+                    <li><a href="updatetime.html">更新時間確認くん</a></li>
+                    <li><a href="facility.html">建設シミュ</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="https://onore.servegame.com/game/sangoku/index.cgi">己鯖</a>
+            </li>
+            <li>
+                <a href="https://x.com/vprjct">連絡先</a>
+            </li>
+        </ul>
+    </nav>
+
+<!-- ===================== -->
+<!-- 都市選択 -->
+<!-- ===================== -->
+<section>
+    <h2>都市選択</h2>
+    <select id="citySelect"></select>
+</section>
+
+<!-- ===================== -->
+<!-- フィルタ -->
+<!-- ===================== -->
+<section>
+    <h2>フィルタ</h2>
+    <div id="facilityFilter">
+        <label><input type="checkbox" value="徴兵" checked> 徴兵</label>
+        <label><input type="checkbox" value="収入" checked> 収入</label>
+        <label><input type="checkbox" value="その他" checked> その他</label>
+        <label><input type="checkbox" value="固有" checked> 文明・都市固有</label>
+    </div>
+</section>
+
+<!-- ===================== -->
+<!-- 施設選択 -->
+<!-- ===================== -->
+<section>
+    <h2>施設選択（最大6種類）</h2>
+
+    <div id="sizeStatusBar" class="size-status-bar"></div>
+    <!-- サイズ警告 -->
+    <div id="sizeWarning" class="warning"></div>
+    <!-- 施設カード表示エリア -->
+    <div id="facilitySelectContainer"></div>
+</section>
+
+<!-- ===================== -->
+<!-- 現在構成プレビュー -->
+<!-- ===================== -->
+<section>
+    <h2>現在の構成</h2>
+    <div style="overflow-x:auto;">
+        <div id="currentResult"></div>
+    </div>
+    <button id="addPatternBtn">この構成を比較に追加</button>
+</section>
+
+<!-- ===================== -->
+<!-- 比較結果 -->
+<!-- ===================== -->
+<section>
+    <h2>比較結果</h2>
+    <div style="overflow-x:auto;">
+        <table id="comparisonTable" border="1"></table>
+    </div>
+</section>
+
+<!-- ===================== -->
+<!-- JS読み込み（必ずbodyの最後） -->
+<!-- ===================== -->
+<script src="js/facility_data.js"></script>
+<script src="js/facility.js"></script>
+
+</body>
+</html>
