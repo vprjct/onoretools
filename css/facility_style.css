@@ -93,10 +93,10 @@ th {
   position: absolute;
   bottom: 110%;
   left: 0;
-  width: 260px;
+  width: 210px;
   background: rgba(40, 40, 40, 0.95);
   color: #fff;
-  padding: 8px 10px;
+  padding: 8px 8px;
   border-radius: 6px;
   font-size: 12px;
   line-height: 1.5;
