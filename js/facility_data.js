@@ -307,6 +307,7 @@ window.cities = [
     agriculture: 1000,
     commerce: 1000,
     facilitySpace: 6,
+    initialFacilities: ["門前町"],
     forbiddenFacilities: ["大社", "寺町","造船所", "軍港","採掘場","漁村","漁港","運河","イゼルローン要塞","フェザーン自治領","硬X線ビーム砲","アルテミスの首飾り","新無憂宮","三月兎亭"]
   },
   {
