@@ -121,6 +121,10 @@ function renderFacilities() {
           desc.style.opacity = "0";
         });
 
+        label.addEventListener("click", () => {
+          desc.style.opacity = "0";
+        });
+
         // スマホ：長押しで表示、離すと非表示
         let longPressTimer = null;
 
@@ -422,6 +426,7 @@ function renderCurrentResult() {
   const subItems = [
     ["米収入", pattern.riceIncome.toLocaleString("ja-JP")],
     ["金収入", pattern.goldIncome.toLocaleString("ja-JP")],
+    ["サイズ",  `${pattern.usedSize}/${pattern.maxSize}`],
     ["費用(米)", pattern.totalRice.toLocaleString("ja-JP")],
     ["費用(金)", pattern.totalGold.toLocaleString("ja-JP")],
   ];
