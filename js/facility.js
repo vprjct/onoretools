@@ -422,7 +422,6 @@ function renderCurrentResult() {
   const subItems = [
     ["米収入", pattern.riceIncome.toLocaleString("ja-JP")],
     ["金収入", pattern.goldIncome.toLocaleString("ja-JP")],
-    ["サイズ",  `${pattern.usedSize}/${pattern.maxSize}`],
     ["費用(米)", pattern.totalRice.toLocaleString("ja-JP")],
     ["費用(金)", pattern.totalGold.toLocaleString("ja-JP")],
   ];
