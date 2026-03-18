@@ -33,6 +33,7 @@ document.addEventListener("DOMContentLoaded", function () {
 citySelect.addEventListener("change", () => {
 
   selectedFacilities = [];
+  updateSelectedCount();
 
   const city = cities.find(c => c.id === citySelect.value);
 
@@ -160,6 +161,7 @@ function renderFacilities() {
 
         renderFacilities();
         updateWarning();
+        updateSelectedCount();
         renderCurrentResult();
       });
 
@@ -247,6 +249,14 @@ function updateWarning() {
 }
 
   // =============================
+  // 選択数表示
+  // =============================
+function updateSelectedCount() {
+  const el = document.getElementById("selectedCount");
+  if (el) el.textContent = selectedFacilities.length;
+}
+
+  // =============================
   // 現在構成計算
   // =============================
 function calculateCurrentPattern() {
@@ -322,43 +332,49 @@ function renderCurrentResult() {
   const wrapper = document.createElement("div");
   wrapper.className = "result-wrapper";
 
-  // ===== 上段（基礎性能）=====
   const main = document.createElement("div");
   main.className = "result-main";
 
-  main.innerHTML = `
-    <div class="result-main-card">
-      <h3>最大人口</h3>
-      <div class="value">${pattern.maxPopulation.toLocaleString("ja-JP")}</div>
-    </div>
+  // 最大人口（フル幅）
+  const popCard = document.createElement("div");
+  popCard.className = "result-main-card";
+  popCard.innerHTML = `<h3>最大人口</h3><div class="value">${pattern.maxPopulation.toLocaleString("ja-JP")}</div>`;
+  main.appendChild(popCard);
 
+  // 農業・商業（横2分割）
+  const agriComm = document.createElement("div");
+  agriComm.className = "result-agri-comm";
+  agriComm.innerHTML = `
     <div class="result-main-card">
       <h3>農業</h3>
       <div class="value">${pattern.totalAgriculture.toLocaleString("ja-JP")}</div>
     </div>
-
     <div class="result-main-card">
       <h3>商業</h3>
       <div class="value">${pattern.totalCommerce.toLocaleString("ja-JP")}</div>
     </div>
   `;
-
+  main.appendChild(agriComm);
   wrapper.appendChild(main);
 
-  // ===== 下段（副情報）=====
+  // サブ情報（2列グリッド）
   const sub = document.createElement("div");
   sub.className = "result-sub";
 
-  sub.innerHTML = `
-    <div>米収入 ${pattern.riceIncome.toLocaleString("ja-JP")}</div>
-    <div>金収入 ${pattern.goldIncome.toLocaleString("ja-JP")}</div>
-    <div>サイズ ${pattern.usedSize}/${pattern.maxSize}</div>
-    <div>建設費用(米) ${pattern.totalRice.toLocaleString("ja-JP")}</div>
-    <div>建設費用(金) ${pattern.totalGold.toLocaleString("ja-JP")}</div>
-  `;
+  const subItems = [
+    ["米収入", pattern.riceIncome.toLocaleString("ja-JP")],
+    ["金収入", pattern.goldIncome.toLocaleString("ja-JP")],
+    ["費用(米)", pattern.totalRice.toLocaleString("ja-JP")],
+    ["費用(金)", pattern.totalGold.toLocaleString("ja-JP")],
+  ];
+
+  subItems.forEach(([label, val]) => {
+    const div = document.createElement("div");
+    div.innerHTML = `${label}<span>${val}</span>`;
+    sub.appendChild(div);
+  });
 
   wrapper.appendChild(sub);
-
   currentResult.appendChild(wrapper);
 }
 

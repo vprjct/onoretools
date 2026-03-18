@@ -1,321 +1,436 @@
-/* styles.css */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+/* =============================================
+   styles.css — 共通テーマ（全ページ共通）
+   battlelog / facility 統一デザインシステム
+============================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+/* ── Design Tokens ── */
+:root {
+  --bg:           #f0f2f5;
+  --surface:      #ffffff;
+  --surface2:     #f5f6f8;
+  --surface3:     #eaecf0;
+  --border:       #dde0e8;
+  --border-bright:#c4c8d4;
+  --accent:       #c07010;
+  --accent2:      #b03030;
+  --accent3:      #1a60c8;
+  --text:         #2a2e3a;
+  --text-dim:     #687088;
+  --text-bright:  #0f1218;
+  --green:        #1a8040;
+  --red:          #c03030;
+  --radius:       8px;
+  --radius-lg:    12px;
+  --font-body:    'Noto Sans JP', sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
 }
+
+/* ── Reset ── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── Base ── */
+html { scroll-behavior: smooth; }
 
 body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f4f4f4;
-    color: #333;
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
 }
 
-nav {
-    background-color: #333;
-    padding: 15px 0;
+/* ── Shared Header ── */
+header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  height: 52px;
 }
 
-.menu {
-    list-style: none;
-    display: flex;
-    justify-content: center;
-    margin: 0;
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-right: 20px;
+  border-right: 1px solid var(--border);
+  margin-right: 4px;
+  flex-shrink: 0;
+  text-decoration: none;
 }
 
-.menu li {
-    position: relative;
-    margin: 0 20px;
+.logo-icon {
+  width: 30px; height: 30px;
+  background: var(--accent);
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px;
+  flex-shrink: 0;
 }
 
-.menu a {
-    color: white;
-    text-decoration: none;
-    font-size: 16px;
-    padding: 10px;
-    display: block;
-    transition: all 0.3s ease;
+header h1 {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-bright);
+  letter-spacing: 0.03em;
+  white-space: nowrap;
 }
 
-.menu .dropdown {
-    position: relative;
+/* ── Header Nav ── */
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex: 1;
+  list-style: none;
 }
 
-.menu .dropdown .submenu {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    background-color: #444;
-    list-style: none;
-    margin: 0;
-    padding: 10px 0;
-    width: 200px;
-    border-radius: 5px;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(10px); /* 初期状態で少し下にずらす */
-    transition: opacity 0.3s, transform 0.3s ease;
+.header-nav a {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-dim);
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: var(--radius);
+  display: block;
+  transition: color 0.15s, background 0.15s;
+  white-space: nowrap;
 }
 
-.menu .dropdown .submenu li {
-    padding: 10px;
-    text-align: center;
+.header-nav a:hover,
+.header-nav a.active {
+  color: var(--text-bright);
+  background: var(--surface2);
 }
 
-.menu .dropdown .submenu li a {
-    color: white;
-    font-size: 14px;
-    transition: background-color 0.3s;
+.header-nav .dropdown { position: relative; list-style: none; }
+
+.header-nav .dropdown > a::after {
+  content: ' ▾';
+  font-size: 9px;
+  opacity: 0.5;
 }
 
-.menu .dropdown .submenu li a:hover {
-    background-color: #555;
+.header-nav .submenu {
+  display: block;
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  list-style: none;
+  min-width: 170px;
+  padding: 4px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(4px);
+  transition: opacity 0.15s, transform 0.15s, visibility 0.15s;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+  z-index: 300;
 }
 
-.menu .dropdown:hover .submenu {
-    display: block;
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0); /* メニューが開くときに元の位置に戻す */
+.header-nav .dropdown:hover .submenu,
+.header-nav .dropdown:focus-within .submenu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
 }
 
-/* モバイル用：サブメニューを手動で開閉 */
-@media (max-width: 768px) {
-    .menu {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .menu .dropdown .submenu {
-        position: static;
-    }
-
-    .menu .dropdown .submenu li {
-        padding: 8px;
-    }
+.header-nav .submenu li a {
+  padding: 7px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--text);
 }
 
-/* センタリングされたおしゃれなサンプル本文 */
-.content {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start; /* コンテンツを上詰めに */
-    align-items: center;
-    text-align: center;
-    background: #fce4ec; /* 薄い桜色 */
-    color: #333; /* 文字色は濃い目で落ち着かせる */
-    padding: 20px 40px; /* 上下の余白を少し調整 */
-    border-radius: 8px;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-    margin: 5px 50px 5px 50px;
+.header-nav .submenu li a:hover {
+  background: var(--surface2);
+  color: var(--text-bright);
 }
 
-.content-header {
-    background-color: #f06292; /* 桜色を背景に */
-    color: white;
-    text-align: center;
-    padding-top: 10px;  /* ヘッダーの高さを半分にするために上下の余白を減らす */
-    width: 100%; /* 横幅を全体に広げる */
-    max-width: 100vw; /* 画面幅いっぱいに広げる */
-    box-sizing: border-box;
-    margin-bottom: 10px; /* セクションと本文の間に余白 */
-    border-radius: 30px; /* 丸みを持たせる */
+.header-meta {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-left: auto;
+  padding-left: 16px;
+  white-space: nowrap;
 }
 
-.content-header h1 {
-    font-size: 2rem; /* 文字サイズを少し小さく */
-    font-family: 'Georgia', serif;
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    margin-bottom: 10px; /* 余白を減らして調整 */
-    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); /* 影をつけて立体感を */
+/* ── Headings ── */
+h1 { font-size: 22px; font-weight: 700; color: var(--text-bright); }
+h2 { font-size: 16px; font-weight: 700; color: var(--text-bright); }
+h3 { font-size: 14px; font-weight: 600; color: var(--text); }
+
+/* ── Sections ── */
+section {
+  margin-bottom: 28px;
 }
 
-.content-header .intro {
-    font-size: 1rem; /* 文字サイズを少し小さく */
-    line-height: 1.6;
-    font-weight: 300;
-    max-width: 800px; /* インターネット閲覧時に広がりすぎないように調整 */
-    margin: 0 auto;
-    color: #f3f3f3;
+section > h2 {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
 }
 
-.content .description {
-    font-size: 1.1rem;
-    margin-bottom: 30px;
-    font-weight: 400;
-    line-height: 1.7;
-    color: #666;
-}
-
-.cta-btn {
-    background-color: #f06292; /* 桜色に少し深みを持たせたピンク */
-    color: white;
-    padding: 15px 30px;
-    font-size: 1.1rem;
-    text-decoration: none;
-    border-radius: 5px;
-    transition: all 0.3s ease;
-    text-transform: uppercase;
-}
-
-.cta-btn:hover {
-    background-color: #ec407a; /* 桜色を少し濃くした色 */
-    transform: translateY(-5px);
-}
-
-.textarea-container {
-    display: flex;
-    gap: 20px;
-    margin-bottom: 20px;
-    justify-content: center;
-}
-
-.textarea-group {
-    text-align: left;
-    width: 460px;
-}
-
+/* ── Form Elements ── */
 label {
-    display: block;
-    font-size: 14px;
-    margin-bottom: 5px;
-    font-weight: bold;
-    color: #333;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--text);
+  cursor: pointer;
 }
+
+input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid var(--border-bright);
+  border-radius: 4px;
+  background: var(--surface2);
+  appearance: none;
+  cursor: pointer;
+  position: relative;
+  transition: border-color 0.15s, background 0.15s;
+  flex-shrink: 0;
+}
+
+input[type="checkbox"]:checked {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+input[type="checkbox"]:checked::after {
+  content: '';
+  position: absolute;
+  left: 4px; top: 1px;
+  width: 5px; height: 9px;
+  border: 2px solid #000;
+  border-top: none;
+  border-left: none;
+  transform: rotate(45deg);
+}
+
+select {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 13px;
+  padding: 8px 32px 8px 12px;
+  outline: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237880a0' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+select:focus { border-color: var(--accent); }
 
 textarea {
-    width: 100%;
-    height: 250px;
-    padding: 10px;
-    font-size: 11px;
-    border: 2px solid #ccc;
-    border-radius: 8px;
-    box-sizing: border-box;
-    resize: none;
-    transition: border-color 0.3s;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 10px 12px;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.15s;
+  width: 100%;
 }
 
-textarea:focus {
-    border-color: #007bff;
-    outline: none;
-}
+textarea:focus { border-color: var(--accent); }
+textarea::placeholder { color: var(--text-dim); }
 
+/* ── Buttons ── */
 button {
-    background-color: #007bff;
-    color: #fff;
-    padding: 10px 20px;
-    font-size: 16px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, transform 0.1s;
 }
 
 button:hover {
-    background-color: #0056b3;
-    transform: scale(1.05);
+  background: var(--surface3);
+  border-color: var(--border-bright);
+  color: var(--text-bright);
 }
 
-button:active {
-    background-color: #003f7f;
+button:active { transform: scale(0.98); }
+
+/* プライマリボタン */
+button.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #000;
+  font-weight: 700;
 }
 
-.font-size-control {
-    width: 30%;
-    margin-top: 5px;
-    text-align: left;
-    font-size: 16px;
+button.primary:hover {
+  background: #f0b030;
+  border-color: #f0b030;
+  box-shadow: 0 4px 16px rgba(232,160,32,0.25);
 }
 
-.font-size-control input {
-    width: 100%;
+/* ── Tables ── */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13px;
 }
 
-/* チェックボックスのカスタマイズ */
-.checkbox-container {
-    margin-top: 2px;
-    text-align: left;
-    font-size: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 10px;
+th, td {
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
 }
 
-.checkbox-container label {
-    margin-bottom: 0;
+th {
+  background: var(--surface2);
+  color: var(--text-dim);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
-.checkbox-container input[type="checkbox"] {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%; /* 丸みを帯びたチェックボックス */
-    border: 2px solid #007bff;
-    appearance: none;
-    outline: none;
-    cursor: pointer;
-    background-color: #fff;
-    position: relative;
-    transition: background-color 0.2s, border-color 0.2s;
+tr:hover td { background: var(--surface2); }
+
+/* ── Links ── */
+a {
+  color: var(--accent3);
+  text-decoration: none;
+  transition: color 0.15s;
 }
 
-.checkbox-container input[type="checkbox"]:checked {
-    background-color: #007bff; /* チェックが入った時の背景色 */
-    border-color: #0056b3;
+a:hover {
+  color: var(--text-bright);
+  text-decoration: underline;
 }
 
-.checkbox-container input[type="checkbox"]:checked::before {
-    content: '✔';
-    position: absolute;
-    top: 1px;
-    left: 2px;
-    color: #fff;
-    font-size: 16px;
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 3px; }
+
+/* ── Cards / Surfaces ── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  transition: border-color 0.15s;
 }
 
-.checkbox-container label {
-    font-size: 16px;
-    font-weight: normal;
-    color: #333;
-    cursor: pointer;
+.card:hover { border-color: var(--border-bright); }
+
+/* ── Page Layout ── */
+.page-content {
+  padding: 28px 32px;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
-/* フッターの全体的なスタイル */
+/* ── Footer ── */
 .footer {
-    background-color: #333; /* 黒色の背景 */
-    color: white; /* 文字を白に */
-    text-align: center;
-    position: relative;
-    bottom: 0;
-    width: 100%;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 20px 32px;
+  text-align: center;
 }
 
+.footer p {
+  font-size: 12px;
+  color: var(--text-dim);
+}
 
 .footer a {
-    color: #b0e3b0; /* 淡いブルー */
-    text-decoration: none; /* 下線を消す */
-    font-weight: bold; /* 文字を太字にして目立たせる */
-    transition: color 0.3s ease, transform 0.3s ease; /* ホバー時のエフェクト */
+  color: var(--text-dim);
+  font-weight: 500;
 }
 
-/* フッター内のリンク（ホバー時） */
-.footer a:hover {
-    color: #ff6347; /* オレンジ色 */
-    transform: translateY(-3px); /* 少し上に動かす */
+.footer a:hover { color: var(--accent); text-decoration: none; }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .page-content { padding: 20px 16px; }
+
+  header {
+    padding: 0 12px;
+    height: auto;
+    min-height: 52px;
+    flex-wrap: wrap;
+    gap: 0;
+  }
+
+  .header-brand {
+    padding: 10px 12px 10px 0;
+    border-right: none;
+    margin-right: 0;
+    flex: 1;
+  }
+
+  .header-meta {
+    display: none;
+  }
+
+  .header-nav {
+    width: 100%;
+    border-top: 1px solid var(--border);
+    padding: 4px 0;
+    gap: 2px;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+  }
+
+  .header-nav a {
+    padding: 6px 10px;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  .header-nav .submenu {
+    position: fixed;
+    top: auto;
+    left: 12px;
+    right: 12px;
+    width: auto;
+  }
 }
 
-/* フッター内のコンテンツ */
-.footer-content {
-    max-width: 1200px; /* 最大幅 */
-    margin: 0 auto;
+/* ── Animations ── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-/* フッターのテキストスタイル */
-.footer p {
-    font-size: 1rem;
-    margin-bottom: 10px;
-    font-family: 'Arial', sans-serif;
-}
+.fade-in { animation: fadeIn 0.2s ease forwards; }

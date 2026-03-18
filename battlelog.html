@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ポメラニアン・変ツー</title>
+<link rel="stylesheet" href="styles.css">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f0f2f5;
+  --surface: #ffffff;
+  --surface2: #f5f6f8;
+  --surface3: #eaecf0;
+  --border: #dde0e8;
+  --border-bright: #c4c8d4;
+  --accent: #c07010;
+  --accent2: #b03030;
+  --accent3: #1a60c8;
+  --text: #2a2e3a;
+  --text-dim: #687088;
+  --text-bright: #0f1218;
+  --green: #1a8040;
+  --red: #c03030;
+  --radius: 8px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: "Noto Sans JP", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 0;
+}
+
+/* ── Header ── */
+/* header styles → styles.css */
+
+/* ── Layout ── */
+.layout {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  min-height: calc(100vh - 65px);
+}
+
+/* ── Sidebar ── */
+.sidebar {
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.step {
+  position: relative;
+}
+.step-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.step-num {
+  width: 18px; height: 18px;
+  background: var(--surface3);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px;
+  color: var(--text-dim);
+  flex-shrink: 0;
+}
+.step.done .step-num {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #000;
+}
+
+.link-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--accent3);
+  text-decoration: none;
+  font-size: 12px;
+  transition: all 0.15s;
+  word-break: break-all;
+}
+.link-card:hover {
+  border-color: var(--accent3);
+  background: var(--surface3);
+}
+.link-icon { font-size: 14px; flex-shrink: 0; }
+
+textarea, select {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 12px;
+  padding: 10px 12px;
+  resize: vertical;
+  transition: border-color 0.15s;
+  outline: none;
+}
+textarea:focus, select:focus {
+  border-color: var(--accent);
+}
+textarea::placeholder { color: var(--text-dim); }
+
+select {
+  font-family: "Noto Sans JP", sans-serif;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237880a0' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 28px;
+}
+
+.run-btn {
+  width: 100%;
+  padding: 12px;
+  background: var(--accent);
+  color: #fff;
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.15s;
+  letter-spacing: 0.05em;
+}
+.run-btn:hover {
+  background: #f0b030;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(232,160,32,0.3);
+}
+.run-btn:active { transform: translateY(0); }
+
+.divider {
+  height: 1px;
+  background: var(--border);
+  margin: 4px 0;
+}
+
+/* ── Main Panel ── */
+.main-panel {
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.panel-header h2 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-bright);
+}
+
+/* ── Stats Bar ── */
+.stats-bar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  transition: border-color 0.15s;
+}
+.stat-card:hover { border-color: var(--border-bright); }
+.stat-label {
+  font-size: 11px;
+  color: var(--text-dim);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.stat-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-bright);
+  font-family: "JetBrains Mono", monospace;
+}
+.stat-value.accent { color: var(--accent); }
+.stat-value.green { color: var(--green); }
+.stat-value.red { color: var(--red); }
+
+/* ── Tabs ── */
+.tabs {
+  display: flex;
+  gap: 2px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 4px;
+  width: fit-content;
+}
+.tab-btn {
+  padding: 7px 18px;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: var(--text-dim);
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.tab-btn.active {
+  background: var(--surface3);
+  color: var(--text-bright);
+}
+.tab-btn:hover:not(.active) { color: var(--text); }
+
+/* ── Output ── */
+.output-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  flex: 1;
+}
+.output-toolbar {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.output-toolbar span {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+.copy-btn {
+  padding: 5px 12px;
+  background: var(--surface3);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: "Noto Sans JP", sans-serif;
+}
+.copy-btn:hover { border-color: var(--border-bright); color: var(--text-bright); }
+.copy-btn.copied { color: var(--green); border-color: var(--green); }
+
+.output-area {
+  white-space: pre;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 13px;
+  line-height: 1.7;
+  padding: 20px;
+  max-height: 520px;
+  overflow-y: auto;
+  color: var(--text);
+}
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* Scrollbar */
+.output-area::-webkit-scrollbar { width: 6px; }
+.output-area::-webkit-scrollbar-track { background: transparent; }
+.output-area::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 3px; }
+
+/* ── Empty State ── */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: var(--text-dim);
+  gap: 12px;
+  text-align: center;
+}
+.empty-icon { font-size: 40px; }
+.empty-state p { font-size: 14px; }
+.empty-state small { font-size: 12px; opacity: 0.6; }
+
+/* ── Summary Cards ── */
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 10px;
+  padding: 16px;
+  border-bottom: 1px solid var(--border);
+}
+.unit-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 12px;
+}
+.unit-type {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-bottom: 4px;
+  letter-spacing: 0.06em;
+}
+.unit-count {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--accent);
+  font-family: "JetBrains Mono", monospace;
+}
+.unit-names {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-top: 4px;
+  line-height: 1.5;
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { border-right: none; border-bottom: 1px solid var(--border); }
+  .stats-bar { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ── Animations ── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.stat-card, .output-wrap {
+  animation: fadeIn 0.2s ease;
+}
+
+/* highlight for output */
+.output-area .section-header { color: var(--accent); font-weight: 700; }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="header-brand" href="#">
+    <div class="logo-icon">⚔</div>
+    <h1>ポメラニアン・変ツー</h1>
+  </a>
+  <nav class="header-nav">
+    <li class="dropdown" style="list-style:none;">
+      <a href="#">ツール</a>
+      <ul class="submenu">
+        <li><a href="updatetime.html">更新時間確認くん</a></li>
+        <li><a href="facility.html">建設シミュ</a></li>
+        <li><a href="battlelog.html" class="active">戦闘ログ分析</a></li>
+      </ul>
+    </li>
+    <a href="https://onore.servegame.com/game/sangoku/index.cgi" target="_blank">己鯖</a>
+    <a href="https://x.com/vprjct" target="_blank">連絡先</a>
+  </nav>
+  <span class="header-meta">戦闘ログ分析ツール</span>
+</header>
+
+<div class="layout">
+
+  <!-- ── Sidebar ── -->
+  <aside class="sidebar">
+
+    <div class="step" id="step1">
+      <div class="step-label"><span class="step-num">1</span>ランキングページ</div>
+      <a class="link-card" href="https://onore.servegame.com/game/sangoku/ranking.cgi" target="_blank">
+        <span class="link-icon">🔗</span>ranking.cgi を開く
+      </a>
+    </div>
+
+    <div class="step" id="step2">
+      <div class="step-label"><span class="step-num">2</span>国名一覧を貼り付け</div>
+      <textarea id="countryListInput" rows="4"
+        placeholder="国名を1行1つで入力&#10;例：&#10;曹魏&#10;蜀漢&#10;東呉"
+        oninput="updateCountryFilter(); markDone('step2', this.value)"></textarea>
+    </div>
+
+    <div class="step" id="step3">
+      <div class="step-label"><span class="step-num">3</span>戦闘ログページ</div>
+      <a class="link-card" href="https://onore.servegame.com/game/sangoku/battlelog_search.cgi?num=30&no=atk_p_country&no=atk_p_name&no=def_p_country&no=def_p_name&dir=&f_year=1600&view2=btl_count&view3=year&view4=rtime&view5=b_field&view6=country&view7=p_name&view9=p_type&view10=sol&view11=soltype&view14=winner&view15=turn" target="_blank">
+        <span class="link-icon">🔗</span>battlelog_search.cgi を開く
+      </a>
+    </div>
+
+    <div class="step" id="step4">
+      <div class="step-label"><span class="step-num">4</span>戦闘ログ一覧を貼り付け</div>
+      <textarea id="input" rows="6"
+        placeholder="戦闘ログ一覧をここに貼り付け..."
+        oninput="markDone('step4', this.value)"></textarea>
+    </div>
+
+    <div class="step" id="step5">
+      <div class="step-label"><span class="step-num">5</span>国フィルタ（任意）</div>
+      <select id="countryFilter">
+        <option value="">全件表示</option>
+      </select>
+    </div>
+
+    <div class="divider"></div>
+
+    <button class="run-btn" onclick="extractData()">⚡ 解析する</button>
+
+  </aside>
+
+  <!-- ── Main ── -->
+  <main class="main-panel">
+
+    <!-- Stats -->
+    <div class="stats-bar" id="statsBar">
+      <div class="stat-card">
+        <div class="stat-label">総プレイヤー数</div>
+        <div class="stat-value accent" id="statPlayers">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">総出兵回数</div>
+        <div class="stat-value" id="statSorties">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">ログ行数</div>
+        <div class="stat-value" id="statLines">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">未判定ログ</div>
+        <div class="stat-value red" id="statUnmatched">—</div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div style="display:flex; align-items:center; gap:16px;">
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab(1)">人別ログ・サマリー</button>
+        <button class="tab-btn" onclick="switchTab(2)">出兵ログ一覧</button>
+      </div>
+    </div>
+
+    <!-- Output -->
+    <div class="output-wrap">
+      <div class="output-toolbar">
+        <span id="outputLabel">解析結果がここに表示されます</span>
+        <button class="copy-btn" id="copyBtn" onclick="copyOutput()">📋 コピー</button>
+      </div>
+
+      <div id="summaryCards" style="display:none"></div>
+
+      <div id="tab1" class="tab-content active">
+        <div id="outputMain" class="output-area">
+          <div class="empty-state">
+            <div class="empty-icon">⚔️</div>
+            <p>左のサイドバーからデータを入力し<br>「解析する」を押してください</p>
+            <small>STEP 1〜5 を順に進めてください</small>
+          </div>
+        </div>
+      </div>
+
+      <div id="tab2" class="tab-content">
+        <div id="outputSortie" class="output-area">
+          <div class="empty-state">
+            <div class="empty-icon">📋</div>
+            <p>出兵ログが表示されます</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+let currentTab = 1;
+
+function switchTab(n) {
+  currentTab = n;
+  document.querySelectorAll(".tab-content").forEach(t => t.classList.remove("active"));
+  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+  document.getElementById("tab" + n).classList.add("active");
+  document.querySelectorAll(".tab-btn")[n - 1].classList.add("active");
+  updateSummaryCards(n);
+}
+
+function updateSummaryCards(n) {
+  const el = document.getElementById("summaryCards");
+  el.style.display = (n === 1 && el.innerHTML) ? "grid" : "none";
+}
+
+function markDone(stepId, value) {
+  const el = document.getElementById(stepId);
+  if (!el) return;
+  const num = el.querySelector(".step-num");
+  if (value && value.trim()) {
+    el.classList.add("done");
+    num.textContent = "✓";
+  } else {
+    el.classList.remove("done");
+    num.textContent = stepId.replace("step", "");
+  }
+}
+
+function updateCountryFilter() {
+  const select = document.getElementById("countryFilter");
+  const list = document.getElementById("countryListInput").value
+    .split("\n").map(c => c.trim()).filter(c => c);
+  select.innerHTML = '<option value="">全件表示</option>';
+  list.forEach(country => {
+    const opt = document.createElement("option");
+    opt.value = country;
+    opt.textContent = country;
+    select.appendChild(opt);
+  });
+}
+
+function extractData() {
+  const input = document.getElementById("input").value;
+  const filterCountry = document.getElementById("countryFilter").value;
+  const countryList = document.getElementById("countryListInput").value
+    .split("\n").map(c => c.trim()).filter(c => c);
+
+  const lines = input.split("\n").filter(l => l.trim());
+  const data = {}, summary = {}, sortieLogs = [], sortieSet = new Set();
+  const unmatched = [];
+
+  lines.forEach(line => {
+    const cols = line.split("\t");
+    if (cols.length < 5) return;
+    const ymMatch = cols[1].match(/(\d+)年(\d+)月/);
+    const dtMatch = cols[2].match(/(\d+)\/(\d+)\s+(\d{2}:\d{2})/);
+    if (!ymMatch || !dtMatch) return;
+
+    const year = ymMatch[1].padStart(4, "0");
+    const month = ymMatch[2].padStart(2, "0");
+    const day = dtMatch[2].padStart(2, "0");
+    const time = dtMatch[3];
+    const timestamp = `${year}-${month}-${day} ${time}`;
+
+    const battleInfo = cols[4];
+    if (!battleInfo.includes("V.S.")) return;
+    const sides = battleInfo.split("V.S.");
+
+    sides.forEach((sideText, index) => {
+      const role = index === 0 ? "出兵" : "守備";
+      const parts = sideText.trim().split(/\s+/);
+      if (parts.length < 5) return;
+
+      const unitType = parts.at(-1);
+      const unit = parts.at(-2);
+      const generalType = parts.at(-3);
+      const front = parts.slice(0, -3).join(" ");
+
+      let country = null, len = 0;
+      countryList.forEach(c => {
+        if (front.startsWith(c) && c.length > len) { country = c; len = c.length; }
+      });
+
+      if (!country) { unmatched.push(front); return; }
+      if (filterCountry && country !== filterCountry) return;
+
+      const player = front.slice(country.length).trim();
+      const entry = `${time}(${role})`;
+
+      if (!data[player]) data[player] = { type: generalType, units: {} };
+      if (!data[player].units[unit]) data[player].units[unit] = [];
+      data[player].units[unit].push(entry);
+
+      if (!summary[unitType]) summary[unitType] = new Set();
+      summary[unitType].add(player);
+
+      if (role === "出兵") {
+        const key = `${timestamp}_${player}_${unit}`;
+        if (!sortieSet.has(key)) {
+          sortieSet.add(key);
+          sortieLogs.push({ timestamp, time, player, generalType, unit });
+        }
+      }
+    });
+  });
+
+  // Stats
+  const playerCount = Object.keys(data).length;
+  const sortieCount = sortieLogs.length;
+  document.getElementById("statPlayers").textContent = playerCount || "0";
+  document.getElementById("statSorties").textContent = sortieCount || "0";
+  document.getElementById("statLines").textContent = lines.length || "0";
+  document.getElementById("statUnmatched").textContent = unmatched.length || "0";
+
+  // Main output
+  let mainOutput = "";
+  Object.keys(data).sort().forEach(player => {
+    mainOutput += `${player}（${data[player].type}）\n`;
+    Object.keys(data[player].units).forEach(unit => {
+      const entries = [...new Set(data[player].units[unit])].sort();
+      mainOutput += `  ・${unit} (${entries.join(", ")})\n`;
+    });
+    mainOutput += "\n";
+  });
+
+  mainOutput += "【サマリー】\n";
+  const displayOrder = ["歩兵", "弓兵", "騎兵", "万能", "妖怪", "壁"];
+  displayOrder.forEach(type => {
+    if (summary[type]) {
+      const players = [...summary[type]].sort();
+      mainOutput += `${type}：${players.length}人（${players.join(", ")}）\n`;
+    }
+  });
+
+  if (unmatched.length) {
+    mainOutput += "\n【国名未判定ログ】\n" + unmatched.join("\n");
+  }
+
+  document.getElementById("outputMain").textContent = mainOutput;
+
+  // Summary cards
+  const displayOrder2 = ["歩兵", "弓兵", "騎兵", "万能", "妖怪", "壁"];
+  const cardEl = document.getElementById("summaryCards");
+  let cardsHTML = "";
+  displayOrder2.forEach(type => {
+    if (summary[type]) {
+      const players = [...summary[type]].sort();
+      cardsHTML += `
+        <div class="unit-card">
+          <div class="unit-type">${type}</div>
+          <div class="unit-count">${players.length}<span style="font-size:12px;color:var(--text-dim);font-family:'Noto Sans JP'">人</span></div>
+          <div class="unit-names">${players.join("　")}</div>
+        </div>`;
+    }
+  });
+  cardEl.innerHTML = cardsHTML;
+  cardEl.style.cssText = "display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px; padding:16px; border-bottom:1px solid var(--border);";
+
+  // Sortie log
+  sortieLogs.sort((a, b) => a.timestamp.localeCompare(b.timestamp));
+  const sortieText = sortieLogs.map(l =>
+    `${l.time}  ${l.player}（${l.generalType}）  ${l.unit}`
+  ).join("\n");
+  document.getElementById("outputSortie").textContent = sortieText || "出兵ログがありません";
+
+  document.getElementById("outputLabel").textContent =
+    `${playerCount}人 / ${sortieCount}件の出兵ログ`;
+
+  if (currentTab === 1) updateSummaryCards(1);
+}
+
+function copyOutput() {
+  const activeOutput = currentTab === 1
+    ? document.getElementById("outputMain")
+    : document.getElementById("outputSortie");
+  const text = activeOutput.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById("copyBtn");
+    btn.textContent = "✅ コピー完了";
+    btn.classList.add("copied");
+    setTimeout(() => {
+      btn.textContent = "📋 コピー";
+      btn.classList.remove("copied");
+    }, 2000);
+  });
+}
+
+updateCountryFilter();
+</script>
+</body>
+</html>

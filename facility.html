@@ -3,86 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ポメラニアンメニュー</title>
+    <title>ポメラニアン・変ツー</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="css/facility_style.css">
 </head>
 <body>
-    <nav>
-        <ul class="menu">
-            <li class="dropdown">
-                <a href="#">ツール</a>
-                <ul class="submenu">
-                    <li><a href="updatetime.html">更新時間確認くん</a></li>
-                    <li><a href="facility.html">建設シミュ</a></li>
-                </ul>
-            </li>
-            <li>
-                <a href="https://onore.servegame.com/game/sangoku/index.cgi">己鯖</a>
-            </li>
-            <li>
-                <a href="https://x.com/vprjct">連絡先</a>
-            </li>
-        </ul>
-    </nav>
 
 <!-- ===================== -->
-<!-- 都市選択 -->
+<!-- ナビゲーション -->
 <!-- ===================== -->
-<section>
-    <h2>都市選択</h2>
-    <select id="citySelect"></select>
-</section>
+<header>
+  <a class="header-brand" href="#">
+    <div class="logo-icon">🏯</div>
+    <h1>ポメラニアン・変ツー</h1>
+  </a>
+  <nav class="header-nav">
+    <li class="dropdown" style="list-style:none;">
+      <a href="#">ツール</a>
+      <ul class="submenu">
+        <li><a href="updatetime.html">更新時間確認くん</a></li>
+        <li><a href="facility.html" class="active">建設シミュ</a></li>
+        <li><a href="battlelog.html">戦闘ログ分析</a></li>
+      </ul>
+    </li>
+    <a href="https://onore.servegame.com/game/sangoku/index.cgi" target="_blank">己鯖</a>
+    <a href="https://x.com/vprjct" target="_blank">連絡先</a>
+  </nav>
+  <span class="header-meta">建設シミュレーター</span>
+</header>
 
 <!-- ===================== -->
-<!-- フィルタ -->
+<!-- 2カラムレイアウト -->
 <!-- ===================== -->
-<section>
-    <h2>フィルタ</h2>
-    <div id="facilityFilter">
-        <label><input type="checkbox" value="徴兵" checked> 徴兵</label>
-        <label><input type="checkbox" value="収入" checked> 収入</label>
-        <label><input type="checkbox" value="その他" checked> その他</label>
-        <label><input type="checkbox" value="固有" checked> 文明・都市固有</label>
-    </div>
-</section>
+<div class="facility-page-layout">
+
+    <!-- ── サイドバー ── -->
+    <aside class="facility-sidebar">
+
+        <!-- 都市選択 -->
+        <div>
+            <div class="facility-section-label">都市選択</div>
+            <select id="citySelect"></select>
+        </div>
+
+        <!-- フィルタ -->
+        <div>
+            <div class="facility-section-label">カテゴリフィルタ</div>
+            <div id="facilityFilter">
+                <label><input type="checkbox" value="徴兵" checked> 徴兵</label>
+                <label><input type="checkbox" value="収入" checked> 収入</label>
+                <label><input type="checkbox" value="その他" checked> その他</label>
+                <label><input type="checkbox" value="固有" checked> 文明・都市固有</label>
+            </div>
+        </div>
+
+
+        <!-- 現在構成プレビュー -->
+        <div>
+            <div class="facility-section-label">現在の構成</div>
+            <div id="currentResult"></div>
+            <button id="addPatternBtn" style="margin-top:12px; width:100%;">＋ 比較に追加</button>
+        </div>
+
+    </aside>
+
+    <!-- ── メインエリア ── -->
+    <main class="facility-main">
+
+        <!-- 施設選択 -->
+        <section>
+            <div class="facility-section-header">
+                <h2>施設選択（<span id="selectedCount">0</span> / 6）</h2>
+                <div id="sizeStatusBar" class="size-status-bar">— / —</div>
+                <div id="sizeWarning" class="warning"></div>
+            </div>
+            <div id="facilitySelectContainer"></div>
+        </section>
+
+        <!-- 比較結果 -->
+        <section>
+            <h2>比較結果</h2>
+            <div style="overflow-x:auto;">
+                <table id="comparisonTable"></table>
+            </div>
+        </section>
+
+    </main>
+</div>
 
 <!-- ===================== -->
-<!-- 施設選択 -->
-<!-- ===================== -->
-<section>
-    <h2>施設選択（最大6種類）</h2>
-
-    <div id="sizeStatusBar" class="size-status-bar"></div>
-    <!-- サイズ警告 -->
-    <div id="sizeWarning" class="warning"></div>
-    <!-- 施設カード表示エリア -->
-    <div id="facilitySelectContainer"></div>
-</section>
-
-<!-- ===================== -->
-<!-- 現在構成プレビュー -->
-<!-- ===================== -->
-<section>
-    <h2>現在の構成</h2>
-    <div style="overflow-x:auto;">
-        <div id="currentResult"></div>
-    </div>
-    <button id="addPatternBtn">この構成を比較に追加</button>
-</section>
-
-<!-- ===================== -->
-<!-- 比較結果 -->
-<!-- ===================== -->
-<section>
-    <h2>比較結果</h2>
-    <div style="overflow-x:auto;">
-        <table id="comparisonTable" border="1"></table>
-    </div>
-</section>
-
-<!-- ===================== -->
-<!-- JS読み込み（必ずbodyの最後） -->
+<!-- JS読み込み -->
 <!-- ===================== -->
 <script src="js/facility_data.js"></script>
 <script src="js/facility.js"></script>
