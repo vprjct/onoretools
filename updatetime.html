@@ -1,70 +1,204 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ポメラニアンメニュー</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>更新時間確認くん — ポメラニアンメニュー</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* ── Page Layout ── */
+    .updatetime-layout {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 28px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* ── Page Title ── */
+    .page-title {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+    }
+
+    .page-title h2 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-bright);
+    }
+
+    .page-title p {
+      font-size: 12px;
+      color: var(--text-dim);
+    }
+
+    /* ── Textarea Row ── */
+    .textarea-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .textarea-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .textarea-group label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    .textarea-group textarea {
+      height: 400px;
+      resize: vertical;
+      font-size: 11px;
+    }
+
+    /* ── Controls ── */
+    .controls-row {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+      padding: 14px 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+
+    .controls-row label {
+      font-size: 13px;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .font-size-control {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-left: auto;
+    }
+
+    .font-size-control span {
+      font-size: 12px;
+      color: var(--text-dim);
+      white-space: nowrap;
+    }
+
+    .font-size-control input[type="range"] {
+      width: 100px;
+      accent-color: var(--accent3);
+      cursor: pointer;
+    }
+
+    .font-size-value {
+      font-size: 12px;
+      font-family: var(--font-mono);
+      color: var(--accent3);
+      min-width: 32px;
+    }
+
+    /* ── Footer ── */
+    .page-footer {
+      text-align: center;
+      padding: 20px 0 8px;
+      font-size: 12px;
+      color: var(--text-dim);
+    }
+
+    .page-footer a {
+      color: var(--text-dim);
+    }
+
+    .page-footer a:hover {
+      color: var(--accent3);
+      text-decoration: none;
+    }
+
+    @media (max-width: 640px) {
+      .updatetime-layout { padding: 20px 16px; }
+      .textarea-row { grid-template-columns: 1fr; }
+      .page-title { flex-direction: column; gap: 4px; }
+      .font-size-control { margin-left: 0; }
+    }
+  </style>
 </head>
 <body>
-    <nav>
-        <ul class="menu">
-            <li class="dropdown">
-                <a href="#">ツール</a>
-                <ul class="submenu">
-                    <li><a href="updatetime.html">更新時間確認くん</a></li>
-                    <li><a href="facility.html">建設シミュくん</a></li>
-                </ul>
-            </li>
-            <li>
-                <a href="https://onore.servegame.com/game/sangoku/index.cgi">己鯖</a>
-            </li>
-            <li>
-                <a href="https://x.com/vprjct">連絡先</a>
-            </li>
-        </ul>
-    </nav>
 
-    <div class="content">
-        <header class="content-header">
-            <h1>更新時間確認くん</h1>
-        </header>
-        <p class="intro">登用、移動、競売（、品物売買）を10分換算してコマンド実行時間に反映する変ツー</p>
-        <!-- メインコンテンツ -->
-        <div class="textarea-container">
-            <div class="textarea-group">
-                <label for="inputText">コマンドリスト</label>
-                <textarea id="inputText" placeholder="コマンドリストからコピペ" oninput="parseInput()"></textarea>
-            </div>
+<!-- ナビゲーション -->
+<header>
+  <a class="header-brand" href="index.html">
+    <div class="logo-icon">⚔</div>
+    <h1>ポメラニアン・変ツー</h1>
+  </a>
+  <nav class="header-nav">
+    <li class="dropdown" style="list-style:none;">
+      <a href="#">ツール</a>
+      <ul class="submenu">
+        <li><a href="updatetime.html" class="active">更新時間確認くん</a></li>
+        <li><a href="facility.html">建設シミュ</a></li>
+        <li><a href="battlelog.html">戦闘ログ分析</a></li>
+      </ul>
+    </li>
+    <a href="https://onore.servegame.com/game/sangoku/index.cgi" target="_blank">己鯖</a>
+    <a href="https://x.com/vprjct" target="_blank">連絡先</a>
+  </nav>
+  <span class="header-meta">更新時間確認くん</span>
+</header>
 
-            <div class="textarea-group">
-                <label for="outputText">変換後</label>
-                <textarea id="outputText" readonly></textarea>
-            </div>
-        </div>
+<!-- メインコンテンツ -->
+<div class="updatetime-layout">
 
-        <!-- チェックボックス -->
-        <div class="checkbox-container">
-          <input type="checkbox" id="time-decrement" onchange="parseInput()">
-          <label for="time-decrement">職人町が存在する</label>
-        </div>
+  <!-- タイトル -->
+  <div class="page-title">
+    <h2>更新時間確認くん</h2>
+    <p>登用・移動・競売（・品物売買）を10分換算してコマンド実行時間に反映するツール</p>
+  </div>
 
-
-        <!-- フォントサイズ調整 -->
-        <div class="font-size-control">
-            <label for="font-size-range">フォントサイズ調整</label>
-            <input type="range" id="font-size-range" min="6" max="36" value="11" step="1" onchange="adjustFontSize()" />
-            <p>現在のフォントサイズ: <span id="font-size-value">11px</span></p>
-        </div>
-
+  <!-- テキストエリア -->
+  <div class="textarea-row">
+    <div class="textarea-group">
+      <label>コマンドリスト</label>
+      <textarea id="inputText" placeholder="コマンドリストからコピペ" oninput="parseInput()"></textarea>
     </div>
+    <div class="textarea-group">
+      <label>変換後</label>
+      <textarea id="outputText" readonly></textarea>
+    </div>
+  </div>
 
-    <footer class="footer">
-        <div class="footer-content">
-            This site is open source. <a href="https://github.com/vprjct/onoretools">Improve this page.</a>
-        </div>
-    </footer>
+  <!-- コントロール -->
+  <div class="controls-row">
+    <label>
+      <input type="checkbox" id="time-decrement" onchange="parseInput()">
+      職人町が存在する
+    </label>
 
-    <script src="script.js"></script>
+    <div class="font-size-control">
+      <span>フォントサイズ</span>
+      <input type="range" id="font-size-range" min="6" max="36" value="11" step="1" oninput="adjustFontSize()">
+      <span class="font-size-value" id="font-size-value">11px</span>
+    </div>
+  </div>
+
+  <!-- フッター -->
+  <div class="page-footer">
+    This site is open source.
+    <a href="https://github.com/vprjct/onoretools" target="_blank">Improve this page.</a>
+  </div>
+
+</div>
+
+<script src="js/updatetime.js"></script>
 </body>
 </html>
