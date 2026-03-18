@@ -13,6 +13,8 @@ body {
   grid-template-columns: 260px 1fr;
   min-height: calc(100vh - 52px);
   gap: 0;
+  max-width: 100vw;
+  overflow-x: hidden;
 }
 
 /* ── Sidebar ── */
@@ -27,6 +29,7 @@ body {
   top: 52px;
   height: calc(100vh - 52px);
   overflow-y: auto;
+  min-width: 0;
 }
 
 .facility-main {
@@ -35,6 +38,7 @@ body {
   flex-direction: column;
   gap: 28px;
   overflow: visible;
+  min-width: 0;
 }
 
 /* ── Section headings within facility ── */
@@ -149,6 +153,12 @@ body {
   margin-top: 4px;
 }
 
+@media (max-width: 480px) {
+  #facilitySelectContainer {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* ── Facility Card ── */
 .facility-select {
   position: relative;
@@ -159,6 +169,10 @@ body {
   cursor: pointer;
   transition: border-color 0.15s, background 0.15s, transform 0.1s;
   overflow: visible;
+  min-width: 0;
+  box-sizing: border-box;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .facility-select:hover {
@@ -241,7 +255,9 @@ body {
 .facility-badges {
   display: flex;
   gap: 3px;
-  flex-shrink: 0;
+  flex-shrink: 1;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 .facility-badge {

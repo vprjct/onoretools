@@ -130,19 +130,26 @@ function renderFacilities() {
 
         label.addEventListener("touchstart", (e) => {
           longPressTimer = setTimeout(() => {
-            const touch = e.touches[0];
-            const margin = 12;
+            // タッチ位置ではなくカードの位置基準で表示
+            const rect = label.getBoundingClientRect();
+            const margin = 8;
             const tipW = 240;
-            const tipH = desc.offsetHeight || 80;
-            let x = touch.clientX + margin;
-            let y = touch.clientY - tipH - margin;
-            if (x + tipW > window.innerWidth) x = touch.clientX - tipW - margin;
-            if (y < 0) y = touch.clientY + margin;
-            desc.style.left = x + "px";
-            desc.style.top  = y + "px";
+            desc.style.left = Math.min(rect.left, window.innerWidth - tipW - margin) + "px";
+            desc.style.top  = "0px"; // 仮置き、高さ確定後に再計算
             desc.style.opacity = "1";
+            requestAnimationFrame(() => {
+              const tipH = desc.offsetHeight;
+              let y = rect.top - tipH - margin;
+              if (y < 0) y = rect.bottom + margin;
+              desc.style.top = y + "px";
+            });
           }, 500);
-        }, { passive: true });
+        }, { passive: false });
+
+        // ロングタップ中のコンテキストメニュー（コピーUI）を抑制
+        label.addEventListener("contextmenu", (e) => {
+          e.preventDefault();
+        });
 
         label.addEventListener("touchend", () => {
           clearTimeout(longPressTimer);
@@ -426,6 +433,7 @@ function renderCurrentResult() {
   const subItems = [
     ["米収入", pattern.riceIncome.toLocaleString("ja-JP")],
     ["金収入", pattern.goldIncome.toLocaleString("ja-JP")],
+    ["サイズ",  `${pattern.usedSize}/${pattern.maxSize}`],
     ["費用(米)", pattern.totalRice.toLocaleString("ja-JP")],
     ["費用(金)", pattern.totalGold.toLocaleString("ja-JP")],
   ];
