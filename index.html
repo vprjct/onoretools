@@ -1,40 +1,254 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ポメラニアンメニュー</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ポメラニアン・変ツー
+  </title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* ── Hero ── */
+    .hero {
+      padding: 64px 32px 48px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    .hero-icon {
+      width: 56px; height: 56px;
+      background: var(--accent);
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px;
+      margin: 0 auto 20px;
+    }
+
+    .hero h2 {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--text-bright);
+      margin-bottom: 10px;
+      letter-spacing: 0.02em;
+    }
+
+    .hero p {
+      font-size: 14px;
+      color: var(--text-dim);
+      max-width: 480px;
+      margin: 0 auto;
+      line-height: 1.8;
+    }
+
+    /* ── Tool Grid ── */
+    .tools-section {
+      padding: 48px 32px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 20px;
+    }
+
+    .tool-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .tool-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+      animation: fadeIn 0.3s ease both;
+    }
+
+    .tool-card:nth-child(2) { animation-delay: 0.08s; }
+    .tool-card:nth-child(3) { animation-delay: 0.16s; }
+
+    .tool-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      text-decoration: none;
+    }
+
+    .tool-card-icon {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .tool-card-icon.amber { background: rgba(192,112,16,0.1); }
+    .tool-card-icon.blue  { background: rgba(26,96,200,0.1); }
+    .tool-card-icon.green { background: rgba(26,128,64,0.1); }
+
+    .tool-card-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-bright);
+    }
+
+    .tool-card-desc {
+      font-size: 12px;
+      color: var(--text-dim);
+      line-height: 1.7;
+      flex: 1;
+    }
+
+    .tool-card-arrow {
+      font-size: 12px;
+      color: var(--text-dim);
+      margin-top: 4px;
+      transition: color 0.15s, transform 0.15s;
+      display: inline-block;
+    }
+
+    .tool-card:hover .tool-card-arrow {
+      color: var(--accent);
+      transform: translateX(4px);
+    }
+
+    /* ── Links section ── */
+    .links-section {
+      padding: 0 32px 48px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .link-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .ext-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 13px;
+      color: var(--text);
+      text-decoration: none;
+      transition: border-color 0.15s, color 0.15s;
+    }
+
+    .ext-link:hover {
+      border-color: var(--border-bright);
+      color: var(--text-bright);
+      text-decoration: none;
+    }
+
+    /* ── Footer ── */
+    .footer {
+      border-top: 1px solid var(--border);
+      padding: 20px 32px;
+      text-align: center;
+    }
+
+    .footer p {
+      font-size: 12px;
+      color: var(--text-dim);
+    }
+
+    @media (max-width: 600px) {
+      .hero { padding: 40px 20px 32px; }
+      .hero h2 { font-size: 20px; }
+      .tools-section, .links-section { padding-left: 20px; padding-right: 20px; }
+    }
+  </style>
 </head>
 <body>
-    <nav>
-        <ul class="menu">
-            <li class="dropdown">
-                <a href="#">ツール</a>
-                <ul class="submenu">
-                    <li><a href="updatetime.html">更新時間確認くん</a></li>
-                </ul>
-            </li>
-            <li>
-                <a href="https://onore.servegame.com/game/sangoku/index.cgi">己鯖</a>
-            </li>
-            <li>
-                <a href="https://x.com/vprjct">連絡先</a>
-            </li>
-        </ul>
-    </nav>
 
-    <div class="content">
-        <header class="content-header">
-            <h1>ポメラニアン・ツール</h1>
-        </header>
-        <p class="intro">令和最新版変ツー</p>
-    </div>
+<!-- ナビゲーション -->
+<header>
+  <a class="header-brand" href="index.html">
+    <div class="logo-icon">⚔</div>
+    <h1>ポメラニアン・変ツー</h1>
+  </a>
+  <nav class="header-nav">
+    <li class="dropdown" style="list-style:none;">
+      <a href="#">変なツール郡</a>
+      <ul class="submenu">
+        <li><a href="updatetime.html">更新時間確認くん</a></li>
+        <li><a href="facility.html">建設シミュ</a></li>
+        <li><a href="battlelog.html">戦闘ログ分析</a></li>
+      </ul>
+    </li>
+    <a href="https://onore.servegame.com/game/sangoku/index.cgi" target="_blank">己鯖</a>
+    <a href="https://x.com/vprjct" target="_blank">連絡先</a>
+  </nav>
+</header>
 
-    <footer class="footer">
-        <div class="footer-content">
-            This site is open source. <a href="https://github.com/vprjct/onoretools">Improve this page.</a>
-        </div>
-    </footer>
+<!-- ヒーロー -->
+<div class="hero">
+  <div class="hero-icon">⚔</div>
+  <h2>ポメラニアン・変ツー</h2>
+  <p>己鯖の変なツール郡です。<br>トウゴスにバレないように使ってください。</p>
+</div>
+
+<!-- ツール一覧 -->
+<div class="tools-section">
+  <div class="section-label">変ツー一覧</div>
+  <div class="tool-grid">
+
+    <a class="tool-card" href="facility.html">
+      <div class="tool-card-icon amber">🏯</div>
+      <div class="tool-card-name">建設シミュ</div>
+      <div class="tool-card-desc">都市ごとに施設を選択し、農業・商業・人口・収入をシミュレーション。複数の構成を比較できます。</div>
+      <span class="tool-card-arrow">開く →</span>
+    </a>
+
+    <a class="tool-card" href="battlelog.html">
+      <div class="tool-card-icon blue">⚔</div>
+      <div class="tool-card-name">戦闘ログ分析</div>
+      <div class="tool-card-desc">戦闘ログを貼り付けて、プレイヤー別の出兵記録・兵種サマリーを自動集計します。</div>
+      <span class="tool-card-arrow">開く →</span>
+    </a>
+
+    <a class="tool-card" href="updatetime.html">
+      <div class="tool-card-icon green">🕐</div>
+      <div class="tool-card-name">更新時間確認くん</div>
+      <div class="tool-card-desc">10分コマンドのズレを確認する用です。</div>
+      <span class="tool-card-arrow">開く →</span>
+    </a>
+
+  </div>
+</div>
+
+<!-- 外部リンク -->
+<div class="links-section">
+  <div class="section-label">外部リンク</div>
+  <div class="link-row">
+    <a class="ext-link" href="https://onore.servegame.com/game/sangoku/index.cgi" target="_blank">
+      🎮 己鯖
+    </a>
+    <a class="ext-link" href="https://x.com/vprjct" target="_blank">
+      𝕏 連絡先
+    </a>
+  </div>
+</div>
+
+<div class="footer">
+  <p>ポメラニアン・変ツー</p>
+</div>
+
 </body>
 </html>
