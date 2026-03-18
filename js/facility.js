@@ -91,6 +91,64 @@ function renderFacilities() {
         desc.className = "facility-desc";
         desc.textContent = f.description;
         label.appendChild(desc);
+
+        // ツールチップをbodyに移動してoverflow/z-index制限を完全回避
+        document.body.appendChild(desc);
+
+        label.addEventListener("mouseenter", () => {
+          if (window.matchMedia("(hover: none)").matches) return;
+          const rect = label.getBoundingClientRect();
+          const margin = 8;
+          const tipW = 240;
+          let x = rect.left;
+          let y = rect.top - margin;
+          // 画面右端を超える場合は右揃えに
+          if (x + tipW > window.innerWidth) x = rect.right - tipW;
+          // 上に収まらない場合はカードの下に表示
+          desc.style.left = x + "px";
+          desc.style.top  = y + "px";
+          desc.style.opacity = "1";
+          // top は描画後に高さが確定してから再計算
+          requestAnimationFrame(() => {
+            const tipH = desc.offsetHeight;
+            let finalY = rect.top - tipH - margin;
+            if (finalY < 0) finalY = rect.bottom + margin;
+            desc.style.top = finalY + "px";
+          });
+        });
+
+        label.addEventListener("mouseleave", () => {
+          desc.style.opacity = "0";
+        });
+
+        // スマホ：長押しで表示、離すと非表示
+        let longPressTimer = null;
+
+        label.addEventListener("touchstart", (e) => {
+          longPressTimer = setTimeout(() => {
+            const touch = e.touches[0];
+            const margin = 12;
+            const tipW = 240;
+            const tipH = desc.offsetHeight || 80;
+            let x = touch.clientX + margin;
+            let y = touch.clientY - tipH - margin;
+            if (x + tipW > window.innerWidth) x = touch.clientX - tipW - margin;
+            if (y < 0) y = touch.clientY + margin;
+            desc.style.left = x + "px";
+            desc.style.top  = y + "px";
+            desc.style.opacity = "1";
+          }, 500);
+        }, { passive: true });
+
+        label.addEventListener("touchend", () => {
+          clearTimeout(longPressTimer);
+          desc.style.opacity = "0";
+        }, { passive: true });
+
+        label.addEventListener("touchmove", () => {
+          clearTimeout(longPressTimer);
+          desc.style.opacity = "0";
+        }, { passive: true });
       }
 
       const isSelected = selectedFacilities.includes(f);
@@ -364,6 +422,7 @@ function renderCurrentResult() {
   const subItems = [
     ["米収入", pattern.riceIncome.toLocaleString("ja-JP")],
     ["金収入", pattern.goldIncome.toLocaleString("ja-JP")],
+    ["サイズ",  `${pattern.usedSize}/${pattern.maxSize}`],
     ["費用(米)", pattern.totalRice.toLocaleString("ja-JP")],
     ["費用(金)", pattern.totalGold.toLocaleString("ja-JP")],
   ];

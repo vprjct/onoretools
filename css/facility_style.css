@@ -34,7 +34,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 28px;
-  overflow: hidden;
+  overflow: visible;
 }
 
 /* ── Section headings within facility ── */
@@ -293,9 +293,7 @@ body {
 
 /* ── Tooltip ── */
 .facility-desc {
-  position: absolute;
-  bottom: calc(100% + 8px);
-  left: 0;
+  position: fixed;
   width: 240px;
   background: var(--surface3);
   border: 1px solid var(--border-bright);
@@ -308,12 +306,11 @@ body {
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.15s;
-  z-index: 200;
+  z-index: 1000;
+  /* JS で top/left を動的にセット */
 }
 
-.facility-select:hover .facility-desc {
-  opacity: 1;
-}
+/* opacity は JS で制御 */
 
 /* ── Result Cards ── */
 .result-wrapper {
