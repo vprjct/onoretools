@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>武将タイプ分類 — ポメラニアン・変ツー</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="css/classify_style.css">
+</head>
+<body>
+
+<header>
+  <a class="header-brand" href="index.html">
+    <div class="logo-icon">🐶</div>
+    <h1>ポメラニアン・変ツー</h1>
+  </a>
+  <nav class="header-nav">
+    <li class="dropdown" style="list-style:none;">
+      <a href="#">変なツール郡</a>
+      <ul class="submenu">
+        <li><a href="updatetime.html">更新時間確認くん</a></li>
+        <li><a href="facility.html">建設シミュ</a></li>
+        <li><a href="battlelog.html">戦闘ログ分析</a></li>
+        <li><a href="classify.html" class="active">武将タイプ分類</a></li>
+      </ul>
+    </li>
+    <a href="https://onore.servegame.com/game/sangoku/index.cgi" target="_blank">己鯖</a>
+    <a href="https://x.com/vprjct" target="_blank">連絡先</a>
+  </nav>
+  <span class="header-meta">武将タイプ分類</span>
+</header>
+
+<div class="classify-layout">
+
+  <div class="page-title">
+    <h2>武将タイプ分類</h2>
+    <p>令和最新版織田ツール</p>
+  </div>
+
+  <!-- 1. プレイヤーデータ入力 -->
+  <div class="input-card">
+    <div class="input-label">プレイヤーデータを貼り付け（武将一覧からコピー）</div>
+    <textarea id="inputData" placeholder="武将一覧の表をそのままコピー＆ペーストしてください"></textarea>
+    <div class="input-actions">
+      <button class="run-btn" onclick="classify()">⚡ 分類する</button>
+      <button class="clear-btn" onclick="clearAll()">クリア</button>
+      <span class="stats-info" id="statsInfo"></span>
+    </div>
+  </div>
+
+  <!-- 2. 守備リスト入力・変換結果 -->
+  <div class="input-card" id="annotateSection" style="display:none;">
+    <div class="input-label">守備リストを貼り付け</div>
+    <p style="font-size:12px;color:var(--text-dim);margin-bottom:8px;">
+      「守備 : 名前1 名前2 ...」形式のテキストを貼り付けると、タイプ付きに変換します
+    </p>
+    <textarea id="annotateInput" rows="2" placeholder="守備 : ポメラニアン うんち 成功 (3人)"></textarea>
+    <div class="input-actions" style="margin-top:8px;">
+      <button class="run-btn" onclick="annotate()">🖊 変換する</button>
+      <label style="font-size:12px;color:var(--text-dim);gap:6px;">
+        <input type="checkbox" id="cutNames" checked> 名前を5文字に切る
+      </label>
+      <label style="font-size:12px;color:var(--text-dim);gap:6px;">
+        先頭
+        <input type="number" id="cutCount" value="10" min="1" max="50"
+          style="width:48px;padding:3px 6px;font-size:12px;background:var(--surface2);border:1px solid var(--border);border-radius:4px;color:var(--text);">
+        名
+      </label>
+    </div>
+    <div id="annotateOutput" style="display:none;margin-top:10px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+        <span style="font-size:11px;color:var(--text-dim);">変換結果</span>
+        <button class="copy-btn" id="annotateCopyBtn" onclick="copyAnnotation()">📋 コピー</button>
+      </div>
+      <div id="annotateResult" style="
+        background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);
+        padding:12px;font-size:13px;font-family:var(--font-mono);color:var(--text);
+        line-height:1.8;word-break:break-all;
+      "></div>
+    </div>
+  </div>
+
+  <!-- 3. タイプカード一覧 -->
+  <div class="result-grid" id="resultGrid"></div>
+
+</div>
+
+<footer class="site-footer">
+  <p>ポメラニアン・変ツー &nbsp;|&nbsp; This site is open source. <a href="https://github.com/vprjct/onoretools" target="_blank">Improve this page.</a></p>
+</footer>
+<script src="js/classify.js"></script>
+
+</body>
+</html>
