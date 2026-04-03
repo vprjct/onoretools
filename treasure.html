@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>国宝チェッカー — ポメラニアン・変ツー</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="css/item_checker_style.css">
+</head>
+<body>
+
+<header>
+  <a class="header-brand" href="index.html">
+    <div class="logo-icon">📦</div>
+    <h1>ポメラニアン・変ツー</h1>
+  </a>
+  <nav class="header-nav">
+    <li class="dropdown" style="list-style:none;">
+      <a href="#">変なツール郡</a>
+      <ul class="submenu">
+        <li><a href="updatetime.html">更新時間確認くん</a></li>
+        <li><a href="facility.html">建設シミュ</a></li>
+        <li><a href="battlelog.html">戦闘ログ分析</a></li>
+        <li><a href="classify.html">武将タイプ分類</a></li>
+        <li><a href="treasure.html" class="active">国宝チェッカー</a></li>
+      </ul>
+    </li>
+    <a href="https://onore.servegame.com/game/sangoku/index.cgi" target="_blank">己鯖</a>
+    <a href="https://x.com/vprjct" target="_blank">連絡先</a>
+  </nav>
+  <span class="header-meta">国宝チェッカー</span>
+</header>
+
+<div class="checker-layout">
+
+  <div class="page-title">
+    <h2>国宝チェッカー</h2>
+    <p>国宝の所持状況を管理</p>
+  </div>
+
+  <!-- 入力エリア -->
+  <div class="checker-input-card">
+    <div class="checker-input-label">所持国宝を貼り付け（カンマ区切り）</div>
+    <textarea id="ownedInput" placeholder="武家町設計図,牧場設計図,門前町設計図,忍の里設計図"></textarea>
+    <div class="checker-input-actions">
+      <button class="run-btn" onclick="applyOwned()">✅ 反映する</button>
+      <button class="clear-btn" onclick="clearOwned()">クリア</button>
+      <span class="checker-stats" id="checkerStats"></span>
+    </div>
+  </div>
+
+  <!-- 検索 -->
+  <div class="checker-search-bar">
+    <input type="text" id="searchInput" placeholder="🔍 アイテム名・効果で検索..." oninput="renderItems()">
+  </div>
+
+  <!-- アイテムグリッド -->
+  <div id="itemGrid" class="item-grid"></div>
+
+</div>
+
+<footer class="site-footer">
+  <p>ポメラニアン・変ツー &nbsp;|&nbsp; This site is open source. <a href="https://github.com/vprjct/onoretools" target="_blank">Improve this page.</a></p>
+</footer>
+
+<script src="js/item_data.js"></script>
+<script src="js/item_checker.js"></script>
+</body>
+</html>

@@ -1,0 +1,181 @@
+/* =============================================
+   item_checker_style.css — 所持チェッカー専用スタイル
+   styles.css のデザイントークンを継承
+============================================= */
+
+.checker-layout {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 28px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.page-title { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.page-title h2 { font-size: 18px; font-weight: 700; color: var(--text-bright); }
+.page-title p  { font-size: 12px; color: var(--text-dim); }
+
+/* ── Input card ── */
+.checker-input-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.checker-input-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.checker-input-card textarea {
+  height: 72px;
+  font-size: 12px;
+  resize: vertical;
+}
+
+.checker-input-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.run-btn {
+  padding: 9px 20px;
+  background: var(--accent);
+  border: none;
+  border-radius: var(--radius);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, box-shadow 0.15s;
+}
+.run-btn:hover {
+  background: #a86010;
+  box-shadow: 0 4px 12px rgba(160,90,10,0.2);
+}
+
+.clear-btn {
+  padding: 9px 16px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-dim);
+  font-family: var(--font-body);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.clear-btn:hover { color: var(--text); border-color: var(--border-bright); }
+
+.checker-stats {
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-left: auto;
+  font-family: var(--font-mono);
+}
+
+/* ── Search ── */
+.checker-search-bar input {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 13px;
+  padding: 10px 14px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.checker-search-bar input:focus { border-color: var(--accent3); }
+.checker-search-bar input::placeholder { color: var(--text-dim); }
+
+/* ── Item grid ── */
+.item-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 8px;
+}
+
+/* ── Item card ── */
+.item-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, opacity 0.2s;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.item-card:hover {
+  border-color: var(--border-bright);
+  background: var(--surface2);
+}
+
+/* 所持済み：グレーアウト */
+.item-card.owned {
+  opacity: 0.38;
+  background: var(--surface2);
+}
+
+.item-card.owned:hover {
+  opacity: 0.55;
+  border-color: var(--border-bright);
+}
+
+.item-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-bright);
+  margin-bottom: 4px;
+  line-height: 1.3;
+}
+
+.item-card.owned .item-name {
+  color: var(--text-dim);
+  text-decoration: line-through;
+}
+
+.item-effect {
+  font-size: 11px;
+  color: var(--text-dim);
+  line-height: 1.5;
+}
+
+/* 所持バッジ */
+.item-owned-badge {
+  display: none;
+  font-size: 10px;
+  color: var(--green);
+  font-weight: 700;
+  margin-bottom: 3px;
+}
+.item-card.owned .item-owned-badge { display: block; }
+
+/* 検索ヒットハイライト */
+.item-card.search-hit {
+  border-color: var(--accent3);
+}
+
+/* 非表示（検索で除外） */
+.item-card.hidden {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .checker-layout { padding: 20px 16px; }
+  .item-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+}
