@@ -30,6 +30,7 @@ function renderItems() {
       <div class="item-owned-badge">✓ 所持済み</div>
       <div class="item-name">${item.name}</div>
       ${item.effect ? `<div class="item-effect">${item.effect}</div>` : ""}
+      ${item.price ? `<div class="item-price">${Number(item.price).toLocaleString("ja-JP")} 金</div>` : ""}
     `;
 
     // クリックで所持トグル

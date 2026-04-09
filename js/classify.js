@@ -340,6 +340,12 @@ function clearAll() {
   localStorage.removeItem(CACHE_KEY);
 }
 
+function clearAnnotate() {
+  document.getElementById("annotateInput").value = "";
+  document.getElementById("annotateOutput").style.display = "none";
+  document.getElementById("annotateOutput").value = "";
+}
+
 // 分類済みプレイヤーのマップ（名前→タイプラベル）
 let playerTypeMap = {};
 
