@@ -23,128 +23,38 @@ const STAT_LABELS = [
 ];
 
 // プレイヤーのタイプキーとラベルを返す
-function getTypeInfo(p) {
-  const { bu, chi, tou, sei } = p;
+function classifyPlayer({ bu, chi, tou, sei }) {
+  const stats = [
+    { key: "bu",  label: "武", value: bu },
+    { key: "chi", label: "知", value: chi },
+    { key: "tou", label: "統", value: tou },
+    { key: "sei", label: "政", value: sei },
+  ];
 
-  // 武・知・統の最大値
-  const maxBCT = Math.max(bu, chi, tou);
+  const max = Math.max(...stats.map(s => s.value));
+  const threshold = max < 80 ? 40 : 50;
+  const group = stats.filter(s => max - s.value < threshold || (s.value >= 80 && s.key !== "sei") || s.value > 100);
 
-  // 政が武知統すべてを上回るなら政タイプ
-  if (sei > bu && sei > chi && sei > tou) {
-    return { key: "sei", label: "政", desc: "政治特化型" };
+  // 謎官判定
+  if (group.length === 4) return { key: "nazo", label: "謎", desc: "品格" };
+  if (group.length === 3 && group.some(s => s.key === "sei")) return { key: "nazo", label: "謎", desc: "品格" };
+
+  // 戦闘狂判定
+  if (group.length === 3) return { key: "senki", label: "戦闘狂", desc: "武力＋知力＋統率型" };
+
+  // 1能力特化
+  if (group.length === 1) {
+    const h = group[0];
+    return { key: h.key, label: h.label, desc: `${h.label}力特化型` };
   }
 
-  // 武・知・統それぞれが「最大値との差がCLOSE以内」かどうか
-  const buClose  = maxBCT - bu  <= CLOSE;
-  const chiClose = maxBCT - chi <= CLOSE;
-  const touClose = maxBCT - tou <= CLOSE;
-
-  // 3つすべてが近い場合
-  if (buClose && chiClose && touClose) {
-    // 政も武知統の最大値に近ければ「謎」（4ステすべて均等）
-    const seiClose = maxBCT - sei <= CLOSE && sei >= maxBCT - CLOSE;
-    if (seiClose) return { key: "nazo", label: "謎", desc: "万能型" };
-    return { key: "senki", label: "戦闘狂", desc: "武力＋知力＋統率型" };
-  }
-
-  // 2つが近い場合 → 差が50未満なら複合、50以上なら主>副
-  if (buClose && chiClose) {
-    const diff = Math.abs(bu - chi);
-    if (diff < CLOSE) return { key: "buchi",  label: "武知",  desc: "武力と知力の差が50未満" };
-    return bu >= chi
-      ? { key: "buchi",  label: "武>知", desc: "武力と知力の差が50以上" }
-      : { key: "buchi",  label: "知>武", desc: "武力と知力の差が50以上" };
-  }
-  if (buClose && touClose) {
-    const diff = Math.abs(bu - tou);
-    if (diff < CLOSE) return { key: "butou",  label: "武統",  desc: "武力と統率の差が50未満" };
-    return bu >= tou
-      ? { key: "butou",  label: "武>統", desc: "武力と統率の差が50以上" }
-      : { key: "butou",  label: "統>武", desc: "武力と統率の差が50以上" };
-  }
-  if (chiClose && touClose) {
-    const diff = Math.abs(chi - tou);
-    if (diff < CLOSE) return { key: "chitou", label: "知統",  desc: "知力と統率の差が50未満" };
-    return chi >= tou
-      ? { key: "chitou", label: "知>統", desc: "知力と統率の差が50以上" }
-      : { key: "chitou", label: "統>知", desc: "知力と統率の差が50以上" };
-  }
-
-  // 1つだけが最大値に近い場合でも、80以上の能力が複数あれば複合型とする
-  const ABS = 80; // 複合型とみなす絶対値閾値
-  const buAbs  = bu  >= ABS;
-  const chiAbs = chi >= ABS;
-  const touAbs = tou >= ABS;
-
-  if (buClose) {
-    // 知か統が80以上なら複合型
-    if (chiAbs && touAbs) {
-      // 知も統も80以上 → 差の大きい方と組み合わせ
-      const diffBC = Math.abs(bu - chi);
-      const diffBT = Math.abs(bu - tou);
-      if (diffBC < CLOSE && diffBT < CLOSE) return { key: "senki", label: "戦闘狂", desc: "武力＋知力＋統率型" };
-      // より近い方と複合
-      if (diffBC <= diffBT) return bu >= chi ? { key: "buchi", label: "武>知", desc: "武力と知力の差が50以上" } : { key: "buchi", label: "知>武", desc: "武力と知力の差が50以上" };
-      return bu >= tou ? { key: "butou", label: "武>統", desc: "武力と統率の差が50以上" } : { key: "butou", label: "統>武", desc: "武力と統率の差が50以上" };
-    }
-    if (chiAbs) {
-      const diff = Math.abs(bu - chi);
-      if (diff < CLOSE) return { key: "buchi", label: "武知", desc: "武力と知力の差が50未満" };
-      return bu >= chi ? { key: "buchi", label: "武>知", desc: "武力と知力の差が50以上" } : { key: "buchi", label: "知>武", desc: "武力と知力の差が50以上" };
-    }
-    if (touAbs) {
-      const diff = Math.abs(bu - tou);
-      if (diff < CLOSE) return { key: "butou", label: "武統", desc: "武力と統率の差が50未満" };
-      return bu >= tou ? { key: "butou", label: "武>統", desc: "武力と統率の差が50以上" } : { key: "butou", label: "統>武", desc: "武力と統率の差が50以上" };
-    }
-    return { key: "bu", label: "武", desc: "武力特化型" };
-  }
-  if (chiClose) {
-    if (buAbs && touAbs) {
-      const diffCB = Math.abs(chi - bu);
-      const diffCT = Math.abs(chi - tou);
-      if (diffCB < CLOSE && diffCT < CLOSE) return { key: "senki", label: "戦闘狂", desc: "武力＋知力＋統率型" };
-      if (diffCB <= diffCT) return chi >= bu ? { key: "buchi", label: "知>武", desc: "武力と知力の差が50以上" } : { key: "buchi", label: "武>知", desc: "武力と知力の差が50以上" };
-      return chi >= tou ? { key: "chitou", label: "知>統", desc: "知力と統率の差が50以上" } : { key: "chitou", label: "統>知", desc: "知力と統率の差が50以上" };
-    }
-    if (buAbs) {
-      const diff = Math.abs(chi - bu);
-      if (diff < CLOSE) return { key: "buchi", label: "武知", desc: "武力と知力の差が50未満" };
-      return chi >= bu ? { key: "buchi", label: "知>武", desc: "武力と知力の差が50以上" } : { key: "buchi", label: "武>知", desc: "武力と知力の差が50以上" };
-    }
-    if (touAbs) {
-      const diff = Math.abs(chi - tou);
-      if (diff < CLOSE) return { key: "chitou", label: "知統", desc: "知力と統率の差が50未満" };
-      return chi >= tou ? { key: "chitou", label: "知>統", desc: "知力と統率の差が50以上" } : { key: "chitou", label: "統>知", desc: "知力と統率の差が50以上" };
-    }
-    return { key: "chi", label: "知", desc: "知力特化型" };
-  }
-  if (touClose) {
-    if (buAbs && chiAbs) {
-      const diffTB = Math.abs(tou - bu);
-      const diffTC = Math.abs(tou - chi);
-      if (diffTB < CLOSE && diffTC < CLOSE) return { key: "senki", label: "戦闘狂", desc: "武力＋知力＋統率型" };
-      if (diffTB <= diffTC) return tou >= bu ? { key: "butou", label: "統>武", desc: "武力と統率の差が50以上" } : { key: "butou", label: "武>統", desc: "武力と統率の差が50以上" };
-      return tou >= chi ? { key: "chitou", label: "統>知", desc: "知力と統率の差が50以上" } : { key: "chitou", label: "知>統", desc: "知力と統率の差が50以上" };
-    }
-    if (buAbs) {
-      const diff = Math.abs(tou - bu);
-      if (diff < CLOSE) return { key: "butou", label: "武統", desc: "武力と統率の差が50未満" };
-      return tou >= bu ? { key: "butou", label: "統>武", desc: "武力と統率の差が50以上" } : { key: "butou", label: "武>統", desc: "武力と統率の差が50以上" };
-    }
-    if (chiAbs) {
-      const diff = Math.abs(tou - chi);
-      if (diff < CLOSE) return { key: "chitou", label: "知統", desc: "知力と統率の差が50未満" };
-      return tou >= chi ? { key: "chitou", label: "統>知", desc: "知力と統率の差が50以上" } : { key: "chitou", label: "知>統", desc: "知力と統率の差が50以上" };
-    }
-    return { key: "tou", label: "統", desc: "統率特化型" };
-  }
-
-  return { key: "nazo", label: "謎", desc: "万能型" };
-}
-
-function getType(p) {
-  return getTypeInfo(p);
+  // 2能力複合
+  const [a, b] = group;
+  const comboKey = a.key + b.key;
+  const diff = a.value - b.value;
+  if (diff > 50)  return { key: comboKey, label: `${a.label}>${b.label}`, desc: `${a.label}力と${b.label}力の差が50以上` };
+  if (diff < -50) return { key: comboKey, label: `${b.label}>${a.label}`, desc: `${a.label}力と${b.label}力の差が50以上` };
+  return { key: comboKey, label: a.label + b.label, desc: `${a.label}力と${b.label}力の複合型` };
 }
 
 function parsePlayers(raw) {
@@ -187,36 +97,13 @@ function classify() {
   }
 
   // タイプ情報付きで分類
-  const typed = players.map(p => ({ ...p, typeInfo: getTypeInfo(p) }));
+  const typed = players.map(p => ({ ...p, typeInfo: classifyPlayer(p) }));
 
   info.textContent = `${players.length} 人を解析`;
 
-  // 注釈用マップを構築（名前→タイプラベル）
-  playerTypeMap = {};
-  typed.forEach(p => { playerTypeMap[p.name] = p.typeInfo.label; });
   document.getElementById("annotateSection").style.display = "block";
 
-  // keyでグループ化しつつ、ラベルは最初に現れたものを代表に
-  const groupMap = new Map();
-  typed.forEach(p => {
-    const { key, label, desc } = p.typeInfo;
-    if (!groupMap.has(key)) {
-      groupMap.set(key, { key, label, desc, players: [] });
-    }
-    // サブラベル（武>知 など）は個別に持たせる
-    groupMap.get(key).players.push({ ...p, typeLabel: label });
-  });
-
-  // 4行構成で表示順を定義
-  const ROW_ORDER = [
-    ["bu", "chi", "tou", "sei"],
-    ["buchi", "chitou", "butou", "senki"],
-    ["buchi_sub_buchi", "butou_sub_butou", "buchi_sub_chibу", "chitou_sub_chitou"],
-    ["butou_sub_tou_bu", "chitou_sub_tou_chi", "nazo_80", "nazo"],
-  ];
-
   // サブラベル単位で細分化したグループを作成
-  const subGroups = new Map();
   const SUB_KEY_MAP = {
     "武>知":   "bu_chi",
     "武>統":   "bu_tou",
@@ -236,19 +123,30 @@ function classify() {
     "統":      "tou",
     "政":      "sei",
     "謎":      "nazo",
+    "武政":    "busei",
+    "武>政":   "busei",
+    "政>武":   "busei",
+    "知政":    "chisei",
+    "知>政":   "chisei",
+    "政>知":   "chisei",
+    "統政":    "tousei",
+    "統>政":   "tousei",
+    "政>統":   "tousei",
   };
 
   // 表示順：ラベルキーのリスト（行×列）
   const DISPLAY_ROWS = [
     ["bu",      "chi",     "tou",    "sei"   ],
-    ["buchi",   "chitou",  "butou",  "senki" ],
-    ["bu_chi",  "bu_tou",  "chi_bu", "chi_tou"],
-    ["tou_bu",  "tou_chi", "nazo",   null    ],
+    ["buchi",   "chitou",  "butou",  "busei" ],
+    ["bu_chi",  "chi_bu",  "tou_bu", "chisei"],
+    ["bu_tou",  "chi_tou", "tou_chi", "tousei" ],
+    ["senki",   "nazo" ],
   ];
 
   // サブラベル単位で再グループ化
   const subGroupMap = new Map();
   typed.forEach(p => {
+    console.log(p.typeInfo.label);
     const sk = SUB_KEY_MAP[p.typeInfo.label] ?? "nazo";
     if (!subGroupMap.has(sk)) subGroupMap.set(sk, []);
     subGroupMap.get(sk).push({ ...p, typeLabel: p.typeInfo.label });
@@ -262,15 +160,18 @@ function classify() {
     sei:     { label: "政",    desc: "政治特化型",          style: TYPE_STYLE.sei    },  // 黄
     buchi:   { label: "武知",  desc: "武力と知力の差が50未満", style: TYPE_STYLE.buchi  },  // 赤
     chitou:  { label: "知統",  desc: "知力と統率の差が50未満", style: TYPE_STYLE.chitou },  // 青
-    butou:   { label: "武統",  desc: "武力と統率の差が50未満", style: TYPE_STYLE.butou  },  // 緑
-    senki:   { label: "戦闘狂",desc: "武力＋知力＋統率型",style: TYPE_STYLE.senki },  // 紫
-    bu_chi:  { label: "武>知", desc: "武力と知力の差が50以上",   style: TYPE_STYLE.buchi  },  // 赤
-    bu_tou:  { label: "武>統", desc: "武力と統率の差が50以上",   style: TYPE_STYLE.buchi  },  // 赤
-    chi_bu:  { label: "知>武", desc: "武力と知力の差が50以上",   style: TYPE_STYLE.chitou },  // 青
-    chi_tou: { label: "知>統", desc: "知力と統率の差が50以上",   style: TYPE_STYLE.chitou },  // 青
-    tou_bu:  { label: "統>武", desc: "武力と統率の差が50以上",   style: TYPE_STYLE.tou    },  // 緑
-    tou_chi: { label: "統>知", desc: "知力と統率の差が50以上",   style: TYPE_STYLE.tou    },  // 緑
-    nazo:    { label: "謎",    desc: "万能型",        style: TYPE_STYLE.nazo   },  // 灰
+    butou:   { label: "武統",  desc: "武力と統率の差が50未満",  style: TYPE_STYLE.butou  },  // 緑
+    senki:   { label: "戦闘狂",desc: "武力＋知力＋統率型",      style: TYPE_STYLE.senki },  // 紫
+    bu_chi:  { label: "武>知", desc: "武力と知力の差が50以上",  style: TYPE_STYLE.buchi  },  // 赤
+    bu_tou:  { label: "武>統", desc: "武力と統率の差が50以上",  style: TYPE_STYLE.buchi  },  // 赤
+    chi_bu:  { label: "知>武", desc: "武力と知力の差が50以上",  style: TYPE_STYLE.chitou },  // 青
+    chi_tou: { label: "知>統", desc: "知力と統率の差が50以上",  style: TYPE_STYLE.chitou },  // 青
+    tou_bu:  { label: "統>武", desc: "武力と統率の差が50以上",  style: TYPE_STYLE.tou    },  // 緑
+    tou_chi: { label: "統>知", desc: "知力と統率の差が50以上",  style: TYPE_STYLE.tou    },  // 緑
+    nazo:    { label: "謎",    desc: "品格",                   style: TYPE_STYLE.nazo   },  // 灰
+    busei:   { label: "武政",  desc: "武力＋政治",              style: TYPE_STYLE.sei    },  // 黄
+    chisei:  { label: "知政",  desc: "知力＋政治",              style: TYPE_STYLE.sei    },  // 黄
+    tousei:  { label: "統政",  desc: "統率＋政治",              style: TYPE_STYLE.sei    },  // 黄
   };
 
   // 描画
@@ -330,13 +231,35 @@ function classify() {
 }
 
 function clearAll() {
+  const targets = [
+    document.getElementById("resultGrid"),
+    document.getElementById("statsInfo"),
+    document.getElementById("annotateSection"),
+    document.getElementById("annotateOutput"),
+  ].filter(Boolean);
+
+  // inputData は即座にクリア
   document.getElementById("inputData").value = "";
-  document.getElementById("resultGrid").innerHTML = "";
-  document.getElementById("statsInfo").textContent = "";
-  document.getElementById("annotateSection").style.display = "none";
-  document.getElementById("annotateInput").value = "";
-  document.getElementById("annotateOutput").style.display = "none";
-  localStorage.removeItem(CACHE_KEY);
+
+  // 他の要素はフェードアウト
+  targets.forEach(el => {
+    el.style.transition = "opacity 0.4s ease";
+    el.style.opacity = "0";
+  });
+
+  setTimeout(() => {
+    document.getElementById("resultGrid").innerHTML = "";
+    document.getElementById("statsInfo").textContent = "";
+    document.getElementById("annotateSection").style.display = "none";
+    document.getElementById("annotateInput").value = "";
+    document.getElementById("annotateOutput").style.display = "none";
+    localStorage.removeItem(CACHE_KEY);
+
+    targets.forEach(el => {
+      el.style.transition = "";
+      el.style.opacity = "";
+    });
+  }, 400);
 }
 
 function clearAnnotate() {

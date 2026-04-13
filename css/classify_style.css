@@ -58,9 +58,9 @@
     .run-btn {
       padding: 9px 24px;
       background: var(--accent);
-      border: none;
-      border-radius: var(--radius);
+      border-color: var(--accent);
       color: #fff;
+      border-radius: var(--radius);
       font-family: var(--font-body);
       font-size: 13px;
       font-weight: 700;
@@ -70,6 +70,7 @@
     .run-btn:hover {
       background: #a86010;
       box-shadow: 0 4px 12px rgba(160,90,10,0.2);
+      color: #fff;
     }
 
     .clear-btn {
