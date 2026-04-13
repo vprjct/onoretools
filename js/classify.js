@@ -155,19 +155,18 @@ function parsePlayers(raw) {
     const cols = line.split("\t");
     if (cols.length < 6) continue;
 
-    // 実データ構造:
-    // [0] 自己PR（空白 or テキスト）
-    // [1] 名前
-    // [2] 武力, [3] 知力, [4] 統率力, [5] 政治力
-    const name = cols[1]?.trim();
-    const bu   = parseInt(cols[2]?.trim());
-    const chi  = parseInt(cols[3]?.trim());
-    const tou  = parseInt(cols[4]?.trim());
-    const sei  = parseInt(cols[5]?.trim());
+    // 順位あり形式: cols[0] が数字 → [0]順位 [1]空白 [2]名前 [3]武力...
+    // 順位なし形式: cols[0] が空白等  → [0]空白  [1]名前 [2]武力...
+    const hasRank = /^\d+$/.test(cols[0].trim());
+    const offset = hasRank ? 2 : 1;
 
-    // 名前が空・数値がおかしい行はスキップ（ヘッダ行など）
+    const name = cols[offset]?.trim();
+    const bu   = parseInt(cols[offset + 1]?.trim());
+    const chi  = parseInt(cols[offset + 2]?.trim());
+    const tou  = parseInt(cols[offset + 3]?.trim());
+    const sei  = parseInt(cols[offset + 4]?.trim());
+
     if (!name || isNaN(bu) || isNaN(chi) || isNaN(tou) || isNaN(sei)) continue;
-    // ヘッダ行除外（「名前」「武力」などの文字列が入っている場合）
     if (name === "名前" || name === "武力") continue;
 
     players.push({ name, bu, chi, tou, sei });

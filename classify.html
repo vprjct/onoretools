@@ -40,7 +40,7 @@
 
   <!-- 1. プレイヤーデータ入力 -->
   <div class="input-card">
-    <div class="input-label">プレイヤーデータを貼り付け（武将一覧からコピー）</div>
+    <div class="input-label">プレイヤーデータを貼り付け（<a href="https://onore.servegame.com/game/sangoku/ranking.cgi">武将一覧</a>からコピー）</div>
     <textarea id="inputData" placeholder="武将一覧の表をそのままコピー＆ペーストしてください"></textarea>
     <div class="input-actions">
       <button class="run-btn" onclick="classify()">⚡ 分類する</button>
@@ -53,7 +53,7 @@
   <div class="input-card" id="annotateSection" style="display:none;">
     <div class="input-label">守備リストを貼り付け</div>
     <p style="font-size:12px;color:var(--text-dim);margin-bottom:8px;">
-      「守備 : 名前1 名前2 ...」形式のテキストを貼り付けると、タイプ付きに変換します
+      偵察ログから「守備 : 名前1 名前2 ...」形式のテキストを貼り付けると、タイプ付きに変換します
     </p>
     <textarea id="annotateInput" rows="2" placeholder="守備 : ポメラニアン うんち 成功 (3人)"></textarea>
     <div class="input-actions" style="margin-top:8px;">
