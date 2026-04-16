@@ -98,6 +98,7 @@ function classify() {
 
   // タイプ情報付きで分類
   const typed = players.map(p => ({ ...p, typeInfo: classifyPlayer(p) }));
+  typed.forEach(p => { playerTypeMap[p.name] = p.typeInfo.label; });
 
   info.textContent = `${players.length} 人を解析`;
 
